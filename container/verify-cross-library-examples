@@ -1,0 +1,113 @@
+#!/bin/bash
+# container/verify-cross-library-examples - Build verification script (runs inside Docker)
+# Usage: Called by ./container/build.sh verify [library_name] [BuildType]
+
+BUILD_TYPE=${1:-Release}
+LIBRARY_NAME=${2:-""}
+
+export PATH="/usr/lib/llvm-17/bin":$PATH
+export AR=llvm-ar
+export AS=llvm-as
+export CC=clang
+export CXX=clang++
+
+PROJECT_ROOT="${HOME}"
+EXAMPLES_DIR="$PROJECT_ROOT/c-api-examples"
+OUTPUT_DIR="$PROJECT_ROOT/linux-check"
+BUILD_BASE="$OUTPUT_DIR/build"
+RESULTS_FILE="$OUTPUT_DIR/build-results.txt"
+LOG_DIR="$OUTPUT_DIR/build-logs"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+mkdir -p "$OUTPUT_DIR" "$BUILD_BASE" "$LOG_DIR"
+
+echo "# Build Results - $(date)" > "$RESULTS_FILE"
+echo "# Example|Status|Phase" >> "$RESULTS_FILE"
+
+if [[ -n "$LIBRARY_NAME" ]]; then
+    EXAMPLES=("$LIBRARY_NAME")
+else
+    EXAMPLES=($(ls -d "$EXAMPLES_DIR"/*/ 2>/dev/null | xargs -n1 basename | grep -v build || true))
+fi
+
+TOTAL=${#EXAMPLES[@]}
+PASSED=0
+FAILED=0
+
+echo "=========================================="
+echo "Build Verification: $TOTAL examples"
+echo "Build Type: $BUILD_TYPE"
+if [[ -n "$LIBRARY_NAME" ]]; then
+    echo "Example: $LIBRARY_NAME"
+fi
+echo "=========================================="
+
+for EXAMPLE in "${EXAMPLES[@]}"; do
+    EXAMPLE_DIR="$EXAMPLES_DIR/$EXAMPLE"
+    BUILD_DIR="$BUILD_BASE/$EXAMPLE"
+    LOG_FILE="$LOG_DIR/${EXAMPLE}.log"
+    
+    if [ ! -d "$EXAMPLE_DIR" ]; then
+        echo -e "${RED}[SKIP]${NC} $EXAMPLE - directory not found"
+        continue
+    fi
+    
+    echo -n "Building $EXAMPLE... "
+    
+    rm -rf "$BUILD_DIR"
+    mkdir -p "$BUILD_DIR"
+    
+    cd "$BUILD_DIR"
+    CMAKE_OUTPUT=$(cmake "$EXAMPLE_DIR" -DCMAKE_BUILD_TYPE=$BUILD_TYPE 2>&1)
+    CMAKE_EXIT=$?
+    
+    if [ $CMAKE_EXIT -ne 0 ]; then
+        echo -e "${RED}[FAIL]${NC} cmake failed"
+        echo "$CMAKE_OUTPUT" > "$LOG_FILE"
+        FAILED=$((FAILED + 1))
+        echo "${EXAMPLE}|failed|cmake" >> "$RESULTS_FILE"
+        continue
+    fi
+    
+    MAKE_OUTPUT=$(make -j$(nproc) 2>&1)
+    MAKE_EXIT=$?
+    
+    if [ $MAKE_EXIT -ne 0 ]; then
+        echo -e "${RED}[FAIL]${NC} make failed"
+        echo "$CMAKE_OUTPUT" > "$LOG_FILE"
+        echo "$MAKE_OUTPUT" >> "$LOG_FILE"
+        FAILED=$((FAILED + 1))
+        echo "${EXAMPLE}|failed|make" >> "$RESULTS_FILE"
+        continue
+    fi
+    
+    echo -e "${GREEN}[PASS]${NC}"
+    PASSED=$((PASSED + 1))
+    echo "${EXAMPLE}|passed|complete" >> "$RESULTS_FILE"
+done
+
+cd "$PROJECT_ROOT"
+
+echo ""
+echo "=========================================="
+echo "Summary"
+echo "=========================================="
+echo -e "Total:   $TOTAL"
+echo -e "Passed:  ${GREEN}$PASSED${NC}"
+echo -e "Failed:  ${RED}$FAILED${NC}"
+echo ""
+echo "Results: $RESULTS_FILE"
+echo "Logs:    $LOG_DIR/"
+
+echo "" >> "$RESULTS_FILE"
+echo "# Summary" >> "$RESULTS_FILE"
+echo "# Total: $TOTAL" >> "$RESULTS_FILE"
+echo "# Passed: $PASSED" >> "$RESULTS_FILE"
+echo "# Failed: $FAILED" >> "$RESULTS_FILE"
+
+if [ $FAILED -gt 0 ]; then
+    exit 1
+fi

@@ -1,0 +1,98 @@
+version: '2'
+services:
+  sherpa-onnx-android_compiler:
+    image: 'android_ndk_cl:v1.3'
+    container_name: sherpa-onnx-android-compiler
+    user: ${USER_ID}:${GROUP_ID}
+    environment:
+      HOME: "${HOME}"
+      HTTP_PROXY: "http://127.0.0.1:7897"
+      HTTPS_PROXY: "http://127.0.0.1:7897"
+      http_proxy: "http://127.0.0.1:7897"
+      https_proxy: "http://127.0.0.1:7897"
+    volumes:
+      - "..:${HOME}"
+      - /opt/cross-library:/opt/cross-library:ro
+    tty: true
+    network_mode: host
+    privileged: true
+  sherpa-onnx-linux_compiler:
+    image: 'linux_gcc_cl:v1.3'
+    container_name: sherpa-onnx-linux-compiler
+    user: ${USER_ID}:${GROUP_ID}
+    environment:
+      HOME: "${HOME}"
+      HTTP_PROXY: "http://127.0.0.1:7897"
+      HTTPS_PROXY: "http://127.0.0.1:7897"
+      http_proxy: "http://127.0.0.1:7897"
+      https_proxy: "http://127.0.0.1:7897"
+    volumes:
+      - "..:${HOME}"
+      - /opt/cross-library:/opt/cross-library:ro
+    tty: true
+    network_mode: host
+    privileged: true
+  sherpa-onnx-oh_compiler:
+    image: 'linux_oh_cl:v1.3'
+    container_name: sherpa-onnx-oh-compiler
+    user: ${USER_ID}:${GROUP_ID}
+    environment:
+      HOME: "${HOME}"
+      HTTP_PROXY: "http://127.0.0.1:7897"
+      HTTPS_PROXY: "http://127.0.0.1:7897"
+      http_proxy: "http://127.0.0.1:7897"
+      https_proxy: "http://127.0.0.1:7897"
+    volumes:
+      - "..:${HOME}"
+      - /opt/cross-library:/opt/cross-library:ro
+    tty: true
+    network_mode: host
+    privileged: true
+  #sherpa-onnx-mips_compiler:
+    #image: 'linux_mips_cl:v1.3'
+    #container_name: sherpa-onnx-mips-compiler
+    #user: ${USER_ID}:${GROUP_ID}
+    #environment:
+      #HOME: "${HOME}"
+      #HTTP_PROXY: "http://127.0.0.1:7897"
+      #HTTPS_PROXY: "http://127.0.0.1:7897"
+      #http_proxy: "http://127.0.0.1:7897"
+      #https_proxy: "http://127.0.0.1:7897"
+    #volumes:
+      #- "..:${HOME}"
+      #- /opt/cross-library:/opt/cross-library:ro
+    #tty: true
+    #network_mode: host
+    #privileged: true
+  sherpa-onnx-linux_checker:
+    image: 'linux_clang_cl:v1.3'
+    container_name: sherpa-onnx-linux-checker
+    user: ${USER_ID}:${GROUP_ID}
+    environment:
+      HOME: "${HOME}"
+      HTTP_PROXY: "http://127.0.0.1:7897"
+      HTTPS_PROXY: "http://127.0.0.1:7897"
+      http_proxy: "http://127.0.0.1:7897"
+      https_proxy: "http://127.0.0.1:7897"
+    volumes:
+      - "..:${HOME}"
+      - /opt/cross-library:/opt/cross-library:ro
+    tty: true
+    network_mode: host
+    privileged: true
+  sherpa-onnx-windows_compiler:
+    image: 'windows_mingw_cl:v1.3'
+    container_name: sherpa-onnx-windows-compiler
+    user: ${USER_ID}:${GROUP_ID}
+    environment:
+      HOME: "${HOME}"
+      HTTP_PROXY: "http://127.0.0.1:7897"
+      HTTPS_PROXY: "http://127.0.0.1:7897"
+      http_proxy: "http://127.0.0.1:7897"
+      https_proxy: "http://127.0.0.1:7897"
+    volumes:
+      - "..:${HOME}"
+      - /opt/cross-library:/opt/cross-library:ro
+    tty: true
+    network_mode: host
+    privileged: true

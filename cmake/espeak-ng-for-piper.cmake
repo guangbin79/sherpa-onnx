@@ -117,6 +117,20 @@ function(download_espeak_ng_for_piper)
     endif()
   endif()
 
+  if(SHERPA_ONNX_ESPEAK_NG_LINK_UCD_WHOLE_ARCHIVE)
+    target_link_libraries(espeak-ng
+      PUBLIC
+        -Wl,--whole-archive
+        ucd
+        -Wl,--no-whole-archive
+    )
+  else()
+    target_link_libraries(espeak-ng
+      PUBLIC
+        ucd
+    )
+  endif()
+
   target_include_directories(espeak-ng
     INTERFACE
       ${espeak_ng_SOURCE_DIR}/src/include
