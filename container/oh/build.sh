@@ -24,10 +24,17 @@ echo -e "\nxxxbuild oh-armeabi-v7a"
 echo -e "\nxxxbuild oh-x86_64"
 "$SELF_DIR"/oh-x86_64.sh "${PWD}/$SDK_PATH/x86_64" "$1" || exit 1
 
-mkdir -p "$SDK_PATH/include"
-cp -r "${PWD}/sherpa-onnx/c-api" "$SDK_PATH/include/" 2>/dev/null || true
-# cp -r "${PWD}/sherpa-onnx/cxx-api" "$SDK_PATH/include/" 2>/dev/null || true
-# find "${PWD}" -name "*.h" -path "*/sherpa-onnx/*" -exec cp {} "$SDK_PATH/include/" \; 2>/dev/null || true
+mkdir -p "$SDK_PATH/include/sherpa-onnx/c-api"
+cp "${PWD}/sherpa-onnx/c-api/c-api.h" "$SDK_PATH/include/sherpa-onnx/c-api/"
+
+for arch_dir in "$SDK_PATH"/*; do
+    if [ -d "$arch_dir/install" ]; then
+        mkdir -p "$arch_dir/lib"
+        cp "$arch_dir/install/lib/libsherpa-onnx-c-api.so" "$arch_dir/lib/" 2>/dev/null || true
+        cp "$arch_dir/install/lib/libonnxruntime.so" "$arch_dir/lib/" 2>/dev/null || true
+        rm -rf "$arch_dir/install"
+    fi
+done
 
 echo "$GIT_VERSION" > "$SDK_PATH/VERSION"
 
