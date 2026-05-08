@@ -26,8 +26,8 @@ echo -e "\nxxxbuild oh-x86_64"
 
 mkdir -p "$SDK_PATH/include"
 cp -r "${PWD}/sherpa-onnx/c-api" "$SDK_PATH/include/" 2>/dev/null || true
-cp -r "${PWD}/sherpa-onnx/cxx-api" "$SDK_PATH/include/" 2>/dev/null || true
-find "${PWD}" -name "*.h" -path "*/sherpa-onnx/*" -exec cp {} "$SDK_PATH/include/" \; 2>/dev/null || true
+# cp -r "${PWD}/sherpa-onnx/cxx-api" "$SDK_PATH/include/" 2>/dev/null || true
+# find "${PWD}" -name "*.h" -path "*/sherpa-onnx/*" -exec cp {} "$SDK_PATH/include/" \; 2>/dev/null || true
 
 echo "$GIT_VERSION" > "$SDK_PATH/VERSION"
 
