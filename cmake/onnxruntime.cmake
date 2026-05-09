@@ -214,10 +214,10 @@ if(location_onnxruntime_header_dir AND location_onnxruntime_lib)
 
     message(STATUS "onnxruntime lib files: ${onnxruntime_lib_files}")
 
-    install(FILES ${onnxruntime_lib_files} DESTINATION lib)
+    install(PROGRAMS ${onnxruntime_lib_files} DESTINATION lib)
 
     if(WIN32)
-      install(FILES ${onnxruntime_lib_files} DESTINATION bin)
+      install(PROGRAMS ${onnxruntime_lib_files} DESTINATION bin)
     endif()
   endif()
 else()

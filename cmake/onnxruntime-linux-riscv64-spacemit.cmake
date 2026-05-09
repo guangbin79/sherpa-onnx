@@ -86,9 +86,9 @@ set_target_properties(spacemit_ep PROPERTIES
 file(GLOB onnxruntime_lib_files
   "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime*")
 message(STATUS "onnxruntime lib files: ${onnxruntime_lib_files}")
-install(FILES ${onnxruntime_lib_files} DESTINATION lib)
+install(PROGRAMS ${onnxruntime_lib_files} DESTINATION lib)
 
 file(GLOB spacemit_ep_lib_files
   "${onnxruntime_SOURCE_DIR}/lib/libspacemit_ep*")
 message(STATUS "spacemit_ep lib files: ${spacemit_ep_lib_files}")
-install(FILES ${spacemit_ep_lib_files} DESTINATION lib)
+install(PROGRAMS ${spacemit_ep_lib_files} DESTINATION lib)

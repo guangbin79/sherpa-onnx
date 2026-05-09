@@ -67,4 +67,4 @@ set_target_properties(onnxruntime PROPERTIES
 
 file(GLOB onnxruntime_lib_files "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime*dylib")
 message(STATUS "onnxruntime lib files: ${onnxruntime_lib_files}")
-install(FILES ${onnxruntime_lib_files} DESTINATION lib)
+install(PROGRAMS ${onnxruntime_lib_files} DESTINATION lib)
