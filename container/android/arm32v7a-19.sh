@@ -90,4 +90,5 @@ cmake -GNinja -B$BUILD_DIR \
 cmake --build $BUILD_DIR && \
 cmake --install $BUILD_DIR && \
 (cp -fv $onnxruntime_version/jni/$ANDROID_ABI_NAME/libonnxruntime.so "$1/install/lib" 2>/dev/null || true) && \
+(chmod +x "$1/install/lib/"libonnxruntime.so 2>/dev/null || true) && \
 rm -rf $BUILD_DIR || exit 1

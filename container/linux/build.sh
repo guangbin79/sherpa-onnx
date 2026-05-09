@@ -32,6 +32,7 @@ for arch_dir in "$SDK_PATH"/*; do
         mkdir -p "$arch_dir/lib"
         cp "$arch_dir/install/lib/libsherpa-onnx-c-api.so" "$arch_dir/lib/" 2>/dev/null || true
         cp "$arch_dir/install/lib/libonnxruntime.so" "$arch_dir/lib/" 2>/dev/null || true
+        chmod +x "$arch_dir/lib/"*.so 2>/dev/null || true
         rm -rf "$arch_dir/install"
     fi
 done

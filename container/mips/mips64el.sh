@@ -23,5 +23,6 @@ rm -rf "$BUILD_DIR"
     "./" && \
     cmake --build $BUILD_DIR && \
     cp "$BUILD_DIR/${PROJECT_NAME}/${LIBRARY_PREFIX}${PROJECT_NAME}.so" "$1" && \
+    chmod +x "$1/"*.so 2>/dev/null || true && \
     rm -rf $BUILD_DIR
     ) || exit 1
