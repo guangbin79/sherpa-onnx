@@ -4540,6 +4540,227 @@ SherpaOnnxCreateOfflineSourceSeparationOHOS(
     NativeResourceManager *mgr);
 #endif
 
+#if __ANDROID_API__ >= 9
+
+/**
+ * @brief Android native asset manager type.
+ *
+ * Pass the AAssetManager obtained from the Android application runtime when
+ * using the `*Android()` constructors below.
+ */
+typedef struct AAssetManager AAssetManager;
+
+/**
+ * @brief Create an offline speech denoiser on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateOfflineSpeechDenoiser().
+ *
+ * @param config Offline denoiser configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated denoiser, or NULL on error. Free it with
+ *         SherpaOnnxDestroyOfflineSpeechDenoiser().
+ */
+SHERPA_ONNX_API const SherpaOnnxOfflineSpeechDenoiser *
+SherpaOnnxCreateOfflineSpeechDenoiserAndroid(
+    const SherpaOnnxOfflineSpeechDenoiserConfig *config,
+    AAssetManager *mgr);
+
+/**
+ * @brief Create an online speech denoiser on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateOnlineSpeechDenoiser().
+ *
+ * @param config Online denoiser configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated denoiser, or NULL on error. Free it with
+ *         SherpaOnnxDestroyOnlineSpeechDenoiser().
+ */
+SHERPA_ONNX_API const SherpaOnnxOnlineSpeechDenoiser *
+SherpaOnnxCreateOnlineSpeechDenoiserAndroid(
+    const SherpaOnnxOnlineSpeechDenoiserConfig *config,
+    AAssetManager *mgr);
+
+/**
+ * @brief Create an online recognizer on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateOnlineRecognizer().
+ *
+ * @param config Recognizer configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated recognizer, or NULL on error. Free it with
+ *         SherpaOnnxDestroyOnlineRecognizer().
+ */
+SHERPA_ONNX_API const SherpaOnnxOnlineRecognizer *
+SherpaOnnxCreateOnlineRecognizerAndroid(
+    const SherpaOnnxOnlineRecognizerConfig *config, AAssetManager *mgr);
+
+/**
+ * @brief Create an offline recognizer on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateOfflineRecognizer().
+ *
+ * @param config Recognizer configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated recognizer, or NULL on error. Free it with
+ *         SherpaOnnxDestroyOfflineRecognizer().
+ */
+SHERPA_ONNX_API const SherpaOnnxOfflineRecognizer *
+SherpaOnnxCreateOfflineRecognizerAndroid(
+    const SherpaOnnxOfflineRecognizerConfig *config,
+    AAssetManager *mgr);
+
+/**
+ * @brief Create a voice activity detector on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateVoiceActivityDetector().
+ *
+ * @param config VAD model configuration.
+ * @param buffer_size_in_seconds Internal buffer duration in seconds.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated VAD instance, or NULL on error. Free it with
+ *         SherpaOnnxDestroyVoiceActivityDetector().
+ */
+SHERPA_ONNX_API const SherpaOnnxVoiceActivityDetector *
+SherpaOnnxCreateVoiceActivityDetectorAndroid(
+    const SherpaOnnxVadModelConfig *config, float buffer_size_in_seconds,
+    AAssetManager *mgr);
+
+/**
+ * @brief Create an offline TTS engine on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateOfflineTts().
+ *
+ * @param config Offline TTS configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated TTS engine, or NULL on error. Free it with
+ *         SherpaOnnxDestroyOfflineTts().
+ */
+SHERPA_ONNX_API const SherpaOnnxOfflineTts *SherpaOnnxCreateOfflineTtsAndroid(
+    const SherpaOnnxOfflineTtsConfig *config, AAssetManager *mgr);
+
+/**
+ * @brief Create an offline punctuation processor on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateOfflinePunctuation().
+ *
+ * @param config Offline punctuation configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated punctuation processor, or NULL on error. Free it
+ *         with SherpaOnnxDestroyOfflinePunctuation().
+ */
+SHERPA_ONNX_API const SherpaOnnxOfflinePunctuation *
+SherpaOnnxCreateOfflinePunctuationAndroid(
+    const SherpaOnnxOfflinePunctuationConfig *config,
+    AAssetManager *mgr);
+
+/**
+ * @brief Create an online punctuation processor on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateOnlinePunctuation().
+ *
+ * @param config Online punctuation configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated punctuation processor, or NULL on error. Free it
+ *         with SherpaOnnxDestroyOnlinePunctuation().
+ */
+SHERPA_ONNX_API const SherpaOnnxOnlinePunctuation *
+SherpaOnnxCreateOnlinePunctuationAndroid(
+    const SherpaOnnxOnlinePunctuationConfig *config,
+    AAssetManager *mgr);
+
+/**
+ * @brief Create a speaker embedding extractor on Android.
+ *
+ * This is the Android counterpart of
+ * SherpaOnnxCreateSpeakerEmbeddingExtractor().
+ *
+ * @param config Speaker embedding extractor configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated extractor, or NULL on error. Free it with
+ *         SherpaOnnxDestroySpeakerEmbeddingExtractor().
+ */
+SHERPA_ONNX_API const SherpaOnnxSpeakerEmbeddingExtractor *
+SherpaOnnxCreateSpeakerEmbeddingExtractorAndroid(
+    const SherpaOnnxSpeakerEmbeddingExtractorConfig *config,
+    AAssetManager *mgr);
+
+/**
+ * @brief Create a keyword spotter on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateKeywordSpotter().
+ *
+ * @param config Keyword spotter configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated keyword spotter, or NULL on error. Free it with
+ *         SherpaOnnxDestroyKeywordSpotter().
+ */
+SHERPA_ONNX_API const SherpaOnnxKeywordSpotter *
+SherpaOnnxCreateKeywordSpotterAndroid(const SherpaOnnxKeywordSpotterConfig *config,
+                                      AAssetManager *mgr);
+
+/**
+ * @brief Create an offline speaker diarizer on Android.
+ *
+ * This is the Android counterpart of
+ * SherpaOnnxCreateOfflineSpeakerDiarization().
+ *
+ * @param config Offline speaker diarization configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated diarizer, or NULL on error. Free it with
+ *         SherpaOnnxDestroyOfflineSpeakerDiarization().
+ */
+SHERPA_ONNX_API const SherpaOnnxOfflineSpeakerDiarization *
+SherpaOnnxCreateOfflineSpeakerDiarizationAndroid(
+    const SherpaOnnxOfflineSpeakerDiarizationConfig *config,
+    AAssetManager *mgr);
+
+/**
+ * @brief Create a source separation engine on Android.
+ *
+ * This is the Android counterpart of
+ * SherpaOnnxCreateOfflineSourceSeparation().
+ *
+ * @param config Source separation configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated source separation engine, or NULL on error. Free it
+ *         with SherpaOnnxDestroyOfflineSourceSeparation().
+ */
+SHERPA_ONNX_API const SherpaOnnxOfflineSourceSeparation *
+SherpaOnnxCreateOfflineSourceSeparationAndroid(
+    const SherpaOnnxOfflineSourceSeparationConfig *config,
+    AAssetManager *mgr);
+
+/**
+ * @brief Create an audio tagger on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateAudioTagging().
+ *
+ * @param config Audio-tagging configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated audio tagger on success, or NULL on error. Free it
+ *         with SherpaOnnxDestroyAudioTagging().
+ */
+SHERPA_ONNX_API const SherpaOnnxAudioTagging *
+SherpaOnnxCreateAudioTaggingAndroid(const SherpaOnnxAudioTaggingConfig *config,
+                                    AAssetManager *mgr);
+
+/**
+ * @brief Create a spoken-language identifier on Android.
+ *
+ * This is the Android counterpart of SherpaOnnxCreateSpokenLanguageIdentification().
+ *
+ * @param config Spoken-language identification configuration.
+ * @param mgr Android asset manager used to resolve bundled assets.
+ * @return A newly allocated identifier on success, or NULL on error. Free it
+ *         with SherpaOnnxDestroySpokenLanguageIdentification().
+ */
+SHERPA_ONNX_API const SherpaOnnxSpokenLanguageIdentification *
+SherpaOnnxCreateSpokenLanguageIdentificationAndroid(
+    const SherpaOnnxSpokenLanguageIdentificationConfig *config,
+    AAssetManager *mgr);
+
+#endif  // __ANDROID_API__ >= 9
+
 #if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif

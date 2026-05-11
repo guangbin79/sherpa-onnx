@@ -3621,3 +3621,315 @@ SherpaOnnxCreateOfflineSourceSeparationOHOS(
 }
 
 #endif  // #ifdef __OHOS__
+
+#if __ANDROID_API__ >= 9
+
+#include "android/asset_manager.h"
+
+const SherpaOnnxOfflineSpeechDenoiser *
+SherpaOnnxCreateOfflineSpeechDenoiserAndroid(
+    const SherpaOnnxOfflineSpeechDenoiserConfig *config,
+    AAssetManager *mgr) {
+  if (config == nullptr) {
+    return nullptr;
+  }
+
+  if (!mgr) {
+    return SherpaOnnxCreateOfflineSpeechDenoiser(config);
+  }
+
+  auto sd_config = GetOfflineSpeechDenoiserConfig(config);
+
+  SherpaOnnxOfflineSpeechDenoiser *sd = new SherpaOnnxOfflineSpeechDenoiser;
+
+  sd->impl =
+      std::make_unique<sherpa_onnx::OfflineSpeechDenoiser>(mgr, sd_config);
+
+  return sd;
+}
+
+const SherpaOnnxOnlineSpeechDenoiser *SherpaOnnxCreateOnlineSpeechDenoiserAndroid(
+    const SherpaOnnxOnlineSpeechDenoiserConfig *config,
+    AAssetManager *mgr) {
+  if (config == nullptr) {
+    return nullptr;
+  }
+
+  if (mgr == nullptr) {
+    return SherpaOnnxCreateOnlineSpeechDenoiser(config);
+  }
+
+  auto sd_config = GetOnlineSpeechDenoiserConfig(config);
+
+  auto *sd = new SherpaOnnxOnlineSpeechDenoiser;
+  sd->impl =
+      std::make_unique<sherpa_onnx::OnlineSpeechDenoiser>(mgr, sd_config);
+
+  return sd;
+}
+
+const SherpaOnnxOnlineRecognizer *SherpaOnnxCreateOnlineRecognizerAndroid(
+    const SherpaOnnxOnlineRecognizerConfig *config,
+    AAssetManager *mgr) {
+  if (!mgr) {
+    return SherpaOnnxCreateOnlineRecognizer(config);
+  }
+
+  sherpa_onnx::OnlineRecognizerConfig recognizer_config =
+      GetOnlineRecognizerConfig(config);
+
+  SherpaOnnxOnlineRecognizer *recognizer = new SherpaOnnxOnlineRecognizer;
+
+  recognizer->impl =
+      std::make_unique<sherpa_onnx::OnlineRecognizer>(mgr, recognizer_config);
+
+  return recognizer;
+}
+
+const SherpaOnnxOnlinePunctuation *SherpaOnnxCreateOnlinePunctuationAndroid(
+    const SherpaOnnxOnlinePunctuationConfig *config,
+    AAssetManager *mgr) {
+  if (config == nullptr) {
+    return nullptr;
+  }
+
+  if (mgr == nullptr) {
+    return SherpaOnnxCreateOnlinePunctuation(config);
+  }
+
+  auto punctuation_config = GetOnlinePunctuationConfig(config);
+  auto *p = new SherpaOnnxOnlinePunctuation;
+  p->impl =
+      std::make_unique<sherpa_onnx::OnlinePunctuation>(mgr, punctuation_config);
+  return p;
+}
+
+const SherpaOnnxOfflineRecognizer *SherpaOnnxCreateOfflineRecognizerAndroid(
+    const SherpaOnnxOfflineRecognizerConfig *config,
+    AAssetManager *mgr) {
+  if (mgr == nullptr) {
+    return SherpaOnnxCreateOfflineRecognizer(config);
+  }
+
+  sherpa_onnx::OfflineRecognizerConfig recognizer_config =
+      GetOfflineRecognizerConfig(config);
+
+  SherpaOnnxOfflineRecognizer *recognizer = new SherpaOnnxOfflineRecognizer;
+
+  recognizer->impl =
+      std::make_unique<sherpa_onnx::OfflineRecognizer>(mgr, recognizer_config);
+
+  return recognizer;
+}
+
+const SherpaOnnxVoiceActivityDetector *
+SherpaOnnxCreateVoiceActivityDetectorAndroid(
+    const SherpaOnnxVadModelConfig *config, float buffer_size_in_seconds,
+    AAssetManager *mgr) {
+  if (mgr == nullptr) {
+    return SherpaOnnxCreateVoiceActivityDetector(config,
+                                                 buffer_size_in_seconds);
+  }
+
+  auto vad_config = GetVadModelConfig(config);
+
+  SherpaOnnxVoiceActivityDetector *p = new SherpaOnnxVoiceActivityDetector;
+  p->impl = std::make_unique<sherpa_onnx::VoiceActivityDetector>(
+      mgr, vad_config, buffer_size_in_seconds);
+
+  return p;
+}
+
+#if SHERPA_ONNX_ENABLE_TTS == 1
+const SherpaOnnxOfflineTts *SherpaOnnxCreateOfflineTtsAndroid(
+    const SherpaOnnxOfflineTtsConfig *config, AAssetManager *mgr) {
+  if (!mgr) {
+    return SherpaOnnxCreateOfflineTts(config);
+  }
+
+  auto tts_config = GetOfflineTtsConfig(config);
+
+  SherpaOnnxOfflineTts *tts = new SherpaOnnxOfflineTts;
+
+  tts->impl = std::make_unique<sherpa_onnx::OfflineTts>(mgr, tts_config);
+
+  return tts;
+}
+#else
+const SherpaOnnxOfflineTts *SherpaOnnxCreateOfflineTtsAndroid(
+    const SherpaOnnxOfflineTtsConfig *config, AAssetManager *mgr) {
+  SHERPA_ONNX_LOGE("TTS is not enabled. Please rebuild sherpa-onnx");
+  return nullptr;
+}
+#endif  // #if SHERPA_ONNX_ENABLE_TTS == 1
+
+const SherpaOnnxOfflinePunctuation *SherpaOnnxCreateOfflinePunctuationAndroid(
+    const SherpaOnnxOfflinePunctuationConfig *config,
+    AAssetManager *mgr) {
+  if (config == nullptr) {
+    return nullptr;
+  }
+
+  if (!mgr) {
+    return SherpaOnnxCreateOfflinePunctuation(config);
+  }
+
+  auto c = GetOfflinePunctuationConfig(config);
+  if (c.model.ct_transformer.empty()) {
+    SHERPA_ONNX_LOGE(
+        "Please specify a punctuation model! Return a null pointer");
+    return nullptr;
+  }
+
+  auto *punct = new SherpaOnnxOfflinePunctuation;
+  punct->impl = std::make_unique<sherpa_onnx::OfflinePunctuation>(mgr, c);
+
+  return punct;
+}
+
+const SherpaOnnxSpeakerEmbeddingExtractor *
+SherpaOnnxCreateSpeakerEmbeddingExtractorAndroid(
+    const SherpaOnnxSpeakerEmbeddingExtractorConfig *config,
+    AAssetManager *mgr) {
+  if (!mgr) {
+    return SherpaOnnxCreateSpeakerEmbeddingExtractor(config);
+  }
+
+  auto c = GetSpeakerEmbeddingExtractorConfig(config);
+
+  auto p = new SherpaOnnxSpeakerEmbeddingExtractor;
+
+  p->impl = std::make_unique<sherpa_onnx::SpeakerEmbeddingExtractor>(mgr, c);
+
+  return p;
+}
+
+const SherpaOnnxKeywordSpotter *SherpaOnnxCreateKeywordSpotterAndroid(
+    const SherpaOnnxKeywordSpotterConfig *config, AAssetManager *mgr) {
+  if (!mgr) {
+    return SherpaOnnxCreateKeywordSpotter(config);
+  }
+
+  auto spotter_config = GetKeywordSpotterConfig(config);
+
+  SherpaOnnxKeywordSpotter *spotter = new SherpaOnnxKeywordSpotter;
+
+  spotter->impl =
+      std::make_unique<sherpa_onnx::KeywordSpotter>(mgr, spotter_config);
+
+  return spotter;
+}
+
+#if SHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION == 1
+const SherpaOnnxOfflineSpeakerDiarization *
+SherpaOnnxCreateOfflineSpeakerDiarizationAndroid(
+    const SherpaOnnxOfflineSpeakerDiarizationConfig *config,
+    AAssetManager *mgr) {
+  if (!mgr) {
+    return SherpaOnnxCreateOfflineSpeakerDiarization(config);
+  }
+
+  auto sd_config = GetOfflineSpeakerDiarizationConfig(config);
+
+  SherpaOnnxOfflineSpeakerDiarization *sd =
+      new SherpaOnnxOfflineSpeakerDiarization;
+
+  sd->impl =
+      std::make_unique<sherpa_onnx::OfflineSpeakerDiarization>(mgr, sd_config);
+
+  return sd;
+}
+#else
+
+const SherpaOnnxOfflineSpeakerDiarization *
+SherpaOnnxCreateOfflineSpeakerDiarizationAndroid(
+    const SherpaOnnxOfflineSpeakerDiarizationConfig *config,
+    AAssetManager *mgr) {
+  SHERPA_ONNX_LOGE(
+      "Speaker diarization is not enabled. Please rebuild sherpa-onnx");
+  return nullptr;
+}
+
+#endif  // #if SHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION == 1
+
+const SherpaOnnxOfflineSourceSeparation *
+SherpaOnnxCreateOfflineSourceSeparationAndroid(
+    const SherpaOnnxOfflineSourceSeparationConfig *config,
+    AAssetManager *mgr) {
+  if (config == nullptr) {
+    return nullptr;
+  }
+
+  if (!mgr) {
+    return SherpaOnnxCreateOfflineSourceSeparation(config);
+  }
+
+  auto ss_config = GetOfflineSourceSeparationConfig(config);
+
+  auto *ss = new SherpaOnnxOfflineSourceSeparation;
+  ss->impl =
+      std::make_unique<sherpa_onnx::OfflineSourceSeparation>(mgr, ss_config);
+
+  return ss;
+}
+
+const SherpaOnnxAudioTagging *SherpaOnnxCreateAudioTaggingAndroid(
+    const SherpaOnnxAudioTaggingConfig *config,
+    AAssetManager *mgr) {
+  if (!mgr) {
+    return SherpaOnnxCreateAudioTagging(config);
+  }
+
+  // Inline config conversion (no helper exists)
+  sherpa_onnx::AudioTaggingConfig ac;
+  ac.model.zipformer.model = SHERPA_ONNX_OR(config->model.zipformer.model, "");
+  ac.model.ced = SHERPA_ONNX_OR(config->model.ced, "");
+  ac.model.num_threads = SHERPA_ONNX_OR(config->model.num_threads, 1);
+  ac.model.debug = config->model.debug;
+  ac.model.provider = SHERPA_ONNX_OR(config->model.provider, "cpu");
+  if (ac.model.provider.empty()) {
+    ac.model.provider = "cpu";
+  }
+  ac.labels = SHERPA_ONNX_OR(config->labels, "");
+  ac.top_k = SHERPA_ONNX_OR(config->top_k, 5);
+
+  if (!ac.Validate()) {
+    SHERPA_ONNX_LOGE("Errors in config");
+    return nullptr;
+  }
+
+  auto *tagger = new SherpaOnnxAudioTagging;
+  tagger->impl = std::make_unique<sherpa_onnx::AudioTagging>(mgr, ac);
+  return tagger;
+}
+
+const SherpaOnnxSpokenLanguageIdentification *
+SherpaOnnxCreateSpokenLanguageIdentificationAndroid(
+    const SherpaOnnxSpokenLanguageIdentificationConfig *config,
+    AAssetManager *mgr) {
+  if (!mgr) {
+    return SherpaOnnxCreateSpokenLanguageIdentification(config);
+  }
+
+  sherpa_onnx::SpokenLanguageIdentificationConfig slid_config;
+  slid_config.whisper.encoder = SHERPA_ONNX_OR(config->whisper.encoder, "");
+  slid_config.whisper.decoder = SHERPA_ONNX_OR(config->whisper.decoder, "");
+  slid_config.whisper.tail_paddings = SHERPA_ONNX_OR(config->whisper.tail_paddings, -1);
+  slid_config.num_threads = SHERPA_ONNX_OR(config->num_threads, 1);
+  slid_config.debug = config->debug;
+  slid_config.provider = SHERPA_ONNX_OR(config->provider, "cpu");
+  if (slid_config.provider.empty()) {
+    slid_config.provider = "cpu";
+  }
+
+  if (!slid_config.Validate()) {
+    SHERPA_ONNX_LOGE("Errors in config");
+    return nullptr;
+  }
+
+  auto *slid = new SherpaOnnxSpokenLanguageIdentification;
+  slid->impl = std::make_unique<sherpa_onnx::SpokenLanguageIdentification>(mgr, slid_config);
+  return slid;
+}
+
+#endif  // __ANDROID_API__ >= 9
